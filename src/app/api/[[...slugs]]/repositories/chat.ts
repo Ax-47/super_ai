@@ -17,10 +17,8 @@ export class ChatRepositoryImpl implements ChatRepository {
       contents: prompt,
     });
 
-    for await (const chunk of stream) {
-      if (chunk.text) {
+    for await (const chunk of stream)
+      if (chunk.text)
         yield chunk.text;
-      }
-    }
   }
 }
