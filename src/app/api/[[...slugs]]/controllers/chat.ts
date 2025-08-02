@@ -16,10 +16,8 @@ export const ChatController = new Elysia().group("/chat", (app) =>
     "/",
     sse<ChatSSEContext, string>(
       async function* ({ body }) {
-        console.log(body.prompt)
         const stream = await usecase.execute(body);
         for await (const chunk of stream) {
-          console.log(chunk)
           yield chunk;
         }
       }
