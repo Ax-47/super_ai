@@ -1,10 +1,10 @@
 import { GoogleGenAI } from '@google/genai';
 import { VectorDatabaseRepository } from '../infrastructures/vector_db';
 import { DatabaseRepository } from '../infrastructures/database';
-export interface ChatRepository {
-  chat(prompt: string): AsyncGenerator<string, void, unknown>
+export interface PromptRepository {
+  prompt(prompt: string): AsyncGenerator<string, void, unknown>
 }
-export class ChatRepositoryImpl implements ChatRepository {
+export class PromptRepositoryImpl implements PromptRepository {
   private ai: GoogleGenAI
   private model: string
   private vector_database: VectorDatabaseRepository
@@ -19,7 +19,7 @@ export class ChatRepositoryImpl implements ChatRepository {
     this.vector_database = vector_database
     this.database = database;
   }
-  async *chat(prompt: string): AsyncGenerator<string, void, unknown> {
+  async *prompt(prompt: string): AsyncGenerator<string, void, unknown> {
 
     const stream = await this.ai.models.generateContentStream({
       model: this.model,
