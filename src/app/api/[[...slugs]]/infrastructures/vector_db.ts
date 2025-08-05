@@ -6,8 +6,8 @@ export class VectorDatabase<T extends Metadata = Metadata> {
   private client: ChromaClient;
   private collections: Map<string, Collection>;
 
-  constructor(baseUrl?: string) {
-    this.client = new ChromaClient({ path: baseUrl || "http://localhost:8000" });
+  constructor(baseUrl: string) {
+    this.client = new ChromaClient({ path: baseUrl });
     this.collections = new Map();
   }
 

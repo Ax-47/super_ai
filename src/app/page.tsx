@@ -35,7 +35,7 @@ export default function ChatPage() {
 
   return (
     <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>มิช่าจัง Chat Stream 🌸</h1>
+      <h1>Chat Stream </h1>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
         <input
