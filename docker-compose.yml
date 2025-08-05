@@ -1,12 +1,31 @@
 services:
   chroma:
-      image: ghcr.io/chroma-core/chroma:latest
-      volumes:
-        - index_data:/chroma/.chroma/index
-      ports:
-        - 8000:8000
-      networks:
-        - net
+    container_name: vector_database
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - 8000:8000
+    volumes:
+      - ./index_data:/chroma/.chroma/index
+    restart: unless-stopped
+    networks:
+      - net
+
+  scylla:
+    container_name: database
+    image: scylladb/scylla
+    ports:
+      - 9042:9042
+      - 10000:10000
+    volumes:
+      - ./scylla_data:/var/lib/scylla
+    restart: unless-stopped
+    networks:
+      - net
+    healthcheck:
+      test: ["CMD", "cqlsh", "-e", "DESCRIBE keyspaces"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   index_data:

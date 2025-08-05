@@ -2,7 +2,7 @@ import { ChromaClient, Collection, EmbeddingFunction } from "chromadb";
 
 type Metadata = { [key: string]: string | number | boolean | null };
 
-export class VectorDatabase<T extends Metadata = Metadata> {
+export class VectorDatabaseRepository<T extends Metadata = Metadata> {
   private client: ChromaClient;
   private collections: Map<string, Collection>;
 
