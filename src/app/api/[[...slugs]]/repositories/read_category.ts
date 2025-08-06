@@ -1,9 +1,9 @@
 import { Category } from '../domain';
 import { DatabaseRepository } from '../infrastructures/database';
-export interface ReadCategoryRepository {
+export interface ReadCategoryIdRepository {
   read(category_id: string): Promise<Category | null>
 }
-export class ReadCategoryRepositoryImpl implements ReadCategoryRepository {
+export class ReadCategoryIdRepositoryImpl implements ReadCategoryIdRepository {
   private database: DatabaseRepository;
   constructor(database: DatabaseRepository) {
     this.database = database;

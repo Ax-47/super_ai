@@ -1,11 +1,11 @@
 import { CategoryUsecaseResponseType, } from "../dtos/category";
-import { ReadCategoryRepository } from "../repositories/read_category";
+import { ReadCategoryIdRepository } from "../repositories/read_category";
 import { Usecase } from "./interface";
 
 export class readCategoryIdUsecase implements Usecase<string, CategoryUsecaseResponseType | null> {
-  read_category_repo: ReadCategoryRepository;
+  read_category_repo: ReadCategoryIdRepository;
 
-  constructor(read_category_repo: ReadCategoryRepository) {
+  constructor(read_category_repo: ReadCategoryIdRepository) {
     this.read_category_repo = read_category_repo;
   }
 
