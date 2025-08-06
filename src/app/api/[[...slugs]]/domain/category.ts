@@ -6,3 +6,5 @@ export interface Category {
   updated_at: Date;
 }
 export type CreateCategory = Pick<Category, 'category_name'>;
+
+export type UpdateCategory = Omit<Category, 'created_at'>;
