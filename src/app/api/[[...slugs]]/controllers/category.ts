@@ -9,6 +9,8 @@ import { ReadCategoriesRepositoryImpl } from "../repositories/read_categories";
 import { ReadCategoriesUsecase } from "../usecases/read_categories";
 import { UpdateCategoryRepositoryImpl } from "../repositories/update_category";
 import { updateCategoryUsecase } from "../usecases/update_category";
+import { DeleteCategoryRepositoryImpl } from "../repositories/delete_category";
+import { deleteCategoryUsecase } from "../usecases/delete_category";
 const database = new DatabaseRepository([process.env.DATABASE_URL!], process.env.DATABASE_KEYSPACE!) // FIX: in the future, it must be yml
 const create_category_repo = new CreateCategoryRepositoryImpl(database);
 const create_category_usecase = new createCategoryUsecase(create_category_repo);
@@ -20,6 +22,10 @@ const read_categories_usecase = new ReadCategoriesUsecase(read_categories_repo);
 
 const update_category_repo = new UpdateCategoryRepositoryImpl(database);
 const update_category_usecase = new updateCategoryUsecase(update_category_repo);
+
+const delete_category_repo = new DeleteCategoryRepositoryImpl(database);
+const delete_category_usecase = new deleteCategoryUsecase(delete_category_repo);
+
 export const CategoryController = new Elysia().group('/category',
   (app) =>
     app
@@ -111,20 +117,29 @@ export const CategoryController = new Elysia().group('/category',
           400: t.String(),
         },
       })
-  // .delete("/:id", async ({ params: { id }, status }) => {
-  //     try {
-  //       const res = await create_category_usecase.execute(id)
-  //       return res
-  //
-  //     } catch {
-  //       return status(400, 'Internal Server Error: Unable to create category');
-  //     }
-  //   }, {
-  //     params: t.Object({ id: t.String() }),
-  //     response: {
-  //       200: CategoryUsecaseResponse,
-  //       400: t.String(),
-  //       404: t.String(),
-  //     },
-  //   })
+      .delete(
+        "/:id",
+        async ({ params: { id }, status }) => {
+          try {
+            await delete_category_usecase.execute(id);
+            return "Category deleted successfully.";
+          } catch (err) {
+            console.error("Failed to delete category:", { id, error: err });
+            return status(500, "Internal Server Error: Unable to delete category.");
+          }
+        },
+        {
+          params: t.Object({
+            id: t.String({ description: "UUID of the category to delete" }),
+          }),
+          response: {
+            200: t.String(),
+            500: t.String(),
+          },
+          detail: {
+            summary: "Delete a category",
+            tags: ["Category"],
+          },
+        }
+      )
 )
