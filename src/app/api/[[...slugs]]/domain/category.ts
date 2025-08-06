@@ -5,3 +5,4 @@ export interface Category {
   created_at: Date;
   updated_at: Date;
 }
+export type CreateCategory = Pick<Category, 'category_name'>;

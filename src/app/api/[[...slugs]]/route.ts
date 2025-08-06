@@ -1,7 +1,8 @@
 import { Elysia } from 'elysia'
 import { HelloWorldController } from './controllers/hello_world';
 import { swagger } from '@elysiajs/swagger'
-import { ChatController } from './controllers/chat';
+import { PromptController } from './controllers/chat';
+import { CategoryController } from './controllers/category';
 const app = new Elysia({ prefix: '/api' })
   .use(
     swagger({
@@ -13,7 +14,8 @@ const app = new Elysia({ prefix: '/api' })
     })
   )
   .use(HelloWorldController)
-  .use(ChatController)
+  .use(PromptController)
+  .use(CategoryController)
 
 export const GET = app.handle;
 export const POST = app.handle;
