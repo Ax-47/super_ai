@@ -1,15 +1,15 @@
-import { CategoryUsecaseResponseType, } from "../../dtos/category";
+import { CategoryResponseType } from "../../dtos/category";
 import { ReadCategoryIdRepository } from "../../repositories/category/read_category";
 import { Usecase } from "../interface";
 
-export class readCategoryIdUsecase implements Usecase<string, CategoryUsecaseResponseType | null> {
+export class readCategoryIdUsecase implements Usecase<string, CategoryResponseType | null> {
   read_category_repo: ReadCategoryIdRepository;
 
   constructor(read_category_repo: ReadCategoryIdRepository) {
     this.read_category_repo = read_category_repo;
   }
 
-  async execute(category_id: string): Promise<CategoryUsecaseResponseType | null> {
+  async execute(category_id: string): Promise<CategoryResponseType | null> {
     try {
       const res = await this.read_category_repo.read(category_id);
       if (!res)

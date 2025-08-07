@@ -1,15 +1,15 @@
-import { CreateCategoryUsecasePromptType, CategoryUsecaseResponseType } from "../../dtos/category";
+import { CategoryResponseType, CreateCategoryBodyType } from "../../dtos/category";
 import { CreateCategoryRepository } from "../../repositories/category/create_category";
 import { Usecase } from "../interface";
 
-export class createCategoryUsecase implements Usecase<CreateCategoryUsecasePromptType, CategoryUsecaseResponseType> {
+export class createCategoryUsecase implements Usecase<CreateCategoryBodyType, CategoryResponseType> {
   create_category_repo: CreateCategoryRepository;
 
   constructor(create_category_repo: CreateCategoryRepository) {
     this.create_category_repo = create_category_repo;
   }
 
-  async execute(category: CreateCategoryUsecasePromptType): Promise<CategoryUsecaseResponseType> {
+  async execute(category: CreateCategoryBodyType): Promise<CategoryResponseType> {
     try {
       const res = await this.create_category_repo.create(category);
       return { category_id: res.category_id, category_name: res.category_name, created_at: res.created_at, updated_at: res.updated_at }

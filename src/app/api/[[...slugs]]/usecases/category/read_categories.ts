@@ -1,4 +1,4 @@
-import { CategoryUsecaseResponseType } from "../../dtos/category";
+import { CategoryResponseType } from "../../dtos/category";
 import { ReadCategoriesRepository } from "../../repositories/category/read_categories";
 import { Usecase } from "../interface";
 interface Input {
@@ -6,7 +6,7 @@ interface Input {
   pagingState?: string;
 }
 interface Output {
-  categories: CategoryUsecaseResponseType[];
+  categories: CategoryResponseType[];
   nextPagingState?: string;
 }
 export class ReadCategoriesUsecase implements Usecase<Input, Output> {
