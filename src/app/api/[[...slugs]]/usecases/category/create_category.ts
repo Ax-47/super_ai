@@ -1,6 +1,6 @@
-import { CreateCategoryUsecasePromptType, CategoryUsecaseResponseType } from "../dtos/category";
-import { CreateCategoryRepository } from "../repositories/create_category";
-import { Usecase } from "./interface";
+import { CreateCategoryUsecasePromptType, CategoryUsecaseResponseType } from "../../dtos/category";
+import { CreateCategoryRepository } from "../../repositories/category/create_category";
+import { Usecase } from "../interface";
 
 export class createCategoryUsecase implements Usecase<CreateCategoryUsecasePromptType, CategoryUsecaseResponseType> {
   create_category_repo: CreateCategoryRepository;

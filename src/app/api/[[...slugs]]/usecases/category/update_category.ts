@@ -1,7 +1,7 @@
-import { UpdateCategory } from "../domain";
-import { UpdateCategoryUsecasePrompt, } from "../dtos/category";
-import { UpdateCategoryRepository } from "../repositories/update_category";
-import { Usecase } from "./interface";
+import { UpdateCategory } from "../../domain";
+import { UpdateCategoryUsecasePrompt, } from "../../dtos/category";
+import { UpdateCategoryRepository } from "../../repositories/category/update_category";
+import { Usecase } from "../interface";
 
 export class updateCategoryUsecase implements Usecase<UpdateCategoryUsecasePrompt, UpdateCategory> {
   update_category_repo: UpdateCategoryRepository;

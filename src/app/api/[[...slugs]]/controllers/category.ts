@@ -1,16 +1,16 @@
 import Elysia, { t } from "elysia";
 import { CreateCategoryUsecasePrompt, CategoryUsecaseResponse, UpdateCategoryUsecaseResponse } from "../dtos/category";
-import { CreateCategoryRepositoryImpl } from "../repositories/create_category";
+import { CreateCategoryRepositoryImpl } from "../repositories/category/create_category";
 import { DatabaseRepository } from "../infrastructures/database";
-import { ReadCategoryIdRepositoryImpl } from "../repositories/read_category";
-import { createCategoryUsecase } from "../usecases/create_category";
-import { readCategoryIdUsecase } from "../usecases/read_category_id";
-import { ReadCategoriesRepositoryImpl } from "../repositories/read_categories";
-import { ReadCategoriesUsecase } from "../usecases/read_categories";
-import { UpdateCategoryRepositoryImpl } from "../repositories/update_category";
-import { updateCategoryUsecase } from "../usecases/update_category";
-import { DeleteCategoryRepositoryImpl } from "../repositories/delete_category";
-import { deleteCategoryUsecase } from "../usecases/delete_category";
+import { ReadCategoryIdRepositoryImpl } from "../repositories/category/read_category";
+import { createCategoryUsecase } from "../usecases/category/create_category";
+import { readCategoryIdUsecase } from "../usecases/category/read_category_id";
+import { ReadCategoriesRepositoryImpl } from "../repositories/category/read_categories";
+import { ReadCategoriesUsecase } from "../usecases/category/read_categories";
+import { UpdateCategoryRepositoryImpl } from "../repositories/category/update_category";
+import { updateCategoryUsecase } from "../usecases/category/update_category";
+import { DeleteCategoryRepositoryImpl } from "../repositories/category/delete_category";
+import { deleteCategoryUsecase } from "../usecases/category/delete_category";
 const database = new DatabaseRepository([process.env.DATABASE_URL!], process.env.DATABASE_KEYSPACE!) // FIX: in the future, it must be yml
 const create_category_repo = new CreateCategoryRepositoryImpl(database);
 const create_category_usecase = new createCategoryUsecase(create_category_repo);

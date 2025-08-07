@@ -1,6 +1,6 @@
 import { QueryOptions } from 'cassandra-driver';
-import { Category } from '../domain';
-import { DatabaseRepository, Paginated } from '../infrastructures/database';
+import { DatabaseRepository, Paginated } from '../../infrastructures/database';
+import { Category } from '../../domain';
 
 export interface ReadCategoriesRepository {
   readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>>;

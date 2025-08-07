@@ -1,6 +1,6 @@
-import { CategoryUsecaseResponseType } from "../dtos/category";
-import { ReadCategoriesRepository } from "../repositories/read_categories";
-import { Usecase } from "./interface";
+import { CategoryUsecaseResponseType } from "../../dtos/category";
+import { ReadCategoriesRepository } from "../../repositories/category/read_categories";
+import { Usecase } from "../interface";
 interface Input {
   limit: number;
   pagingState?: string;

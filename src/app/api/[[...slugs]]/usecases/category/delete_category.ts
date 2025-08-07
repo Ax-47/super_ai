@@ -1,6 +1,6 @@
 
-import { DeleteCategoryRepository } from "../repositories/delete_category";
-import { Usecase } from "./interface";
+import { DeleteCategoryRepository } from "../../repositories/category/delete_category";
+import { Usecase } from "../interface";
 
 export class deleteCategoryUsecase implements Usecase<string, void> {
   delete_category_repo: DeleteCategoryRepository;

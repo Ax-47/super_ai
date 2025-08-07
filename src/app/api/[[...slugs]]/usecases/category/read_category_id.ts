@@ -1,6 +1,6 @@
-import { CategoryUsecaseResponseType, } from "../dtos/category";
-import { ReadCategoryIdRepository } from "../repositories/read_category";
-import { Usecase } from "./interface";
+import { CategoryUsecaseResponseType, } from "../../dtos/category";
+import { ReadCategoryIdRepository } from "../../repositories/category/read_category";
+import { Usecase } from "../interface";
 
 export class readCategoryIdUsecase implements Usecase<string, CategoryUsecaseResponseType | null> {
   read_category_repo: ReadCategoryIdRepository;
