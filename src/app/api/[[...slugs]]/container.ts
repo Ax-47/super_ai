@@ -7,6 +7,7 @@ import { ReadCategoriesRepository, ReadCategoriesRepositoryImpl } from "./reposi
 import { ReadCategoryIdRepository, ReadCategoryIdRepositoryImpl } from "./repositories/category/read_category";
 import { CreateCategoryRepository, CreateCategoryRepositoryImpl } from "./repositories/category/create_category";
 import { DeleteCategoryRepository, DeleteCategoryRepositoryImpl } from "./repositories/category/delete_category";
+import { VectorDatabaseRepository } from "./infrastructures/vector_db";
 container.register(Client, {
   useValue: new Client({
     contactPoints: [process.env.DATABASE_URL!],
@@ -15,6 +16,7 @@ container.register(Client, {
   })
 });
 container.register("DatabaseRepository", { useClass: DatabaseRepository });
+container.register("VectorDatabaseRepository", { useClass: VectorDatabaseRepository });
 container.register<ReadCategoriesRepository>("ReadCategoriesRepository", {
   useClass: ReadCategoriesRepositoryImpl
 });

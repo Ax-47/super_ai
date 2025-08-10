@@ -2,15 +2,9 @@ import { Elysia } from 'elysia'
 import { swagger } from '@elysiajs/swagger'
 import 'reflect-metadata';
 import { HelloWorldController } from './controllers/hello_world';
-import { PromptController } from './controllers/chat';
+// import { PromptController } from './controllers/chat';
 import { CategoryController } from './controllers/category';
-import { container } from 'tsyringe';
-import { UpdateCategoryRepository, UpdateCategoryRepositoryImpl } from './repositories/category/update_category';
 
-container.register<UpdateCategoryRepository>(
-  "UpdateCategoryRepository",
-  { useClass: UpdateCategoryRepositoryImpl }
-);
 const app = new Elysia({ prefix: '/api' })
   .use(
     swagger({

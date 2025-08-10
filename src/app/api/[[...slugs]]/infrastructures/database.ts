@@ -9,7 +9,6 @@ export class DatabaseRepository {
   constructor(
     @inject(Client) private client: Client
   ) {
-
     this.client = client
   }
   getClient(): Client {
