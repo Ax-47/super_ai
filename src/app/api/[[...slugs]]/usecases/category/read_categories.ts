@@ -1,5 +1,6 @@
+import { inject, injectable } from "tsyringe";
 import { CategoryResponseType } from "../../dtos/category";
-import { ReadCategoriesRepository } from "../../repositories/category/read_categories";
+import type { ReadCategoriesRepository } from "../../repositories/category/read_categories";
 import { Usecase } from "../interface";
 interface Input {
   limit: number;
@@ -9,12 +10,12 @@ interface Output {
   categories: CategoryResponseType[];
   nextPagingState?: string;
 }
-export class ReadCategoriesUsecase implements Usecase<Input, Output> {
-  private read_categories_repo: ReadCategoriesRepository;
 
-  constructor(read_categories_repo: ReadCategoriesRepository) {
-    this.read_categories_repo = read_categories_repo;
-  }
+@injectable()
+export class ReadCategoriesUsecase implements Usecase<Input, Output> {
+  constructor(
+    @inject("ReadCategoriesRepository") private read_categories_repo: ReadCategoriesRepository
+  ) { }
 
   async execute({ limit, pagingState }: Input): Promise<Output> {
     try {

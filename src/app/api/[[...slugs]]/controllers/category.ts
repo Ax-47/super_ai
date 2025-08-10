@@ -1,31 +1,19 @@
 import Elysia from "elysia";
-import { CreateCategoryRepositoryImpl } from "../repositories/category/create_category";
-import { DatabaseRepository } from "../infrastructures/database";
-import { ReadCategoryIdRepositoryImpl } from "../repositories/category/read_category";
-import { createCategoryUsecase } from "../usecases/category/create_category";
-import { readCategoryIdUsecase } from "../usecases/category/read_category_id";
-import { ReadCategoriesRepositoryImpl } from "../repositories/category/read_categories";
-import { ReadCategoriesUsecase } from "../usecases/category/read_categories";
-import { UpdateCategoryRepositoryImpl } from "../repositories/category/update_category";
-import { updateCategoryUsecase } from "../usecases/category/update_category";
-import { DeleteCategoryRepositoryImpl } from "../repositories/category/delete_category";
-import { deleteCategoryUsecase } from "../usecases/category/delete_category";
 import { ErrorDTO } from "../dtos/error_dto";
 import { MessageDTO } from "../dtos/message";
 import { CategoryIdParamDTO, CategoryResponseDTO, CreateCategoryBodyDTO, ReadCategoriesQueryDTO, ReadCategoriesResponseDTO, UpdateCategoryBodyDTO, UpdateCategoryResponseDTO } from "../dtos/category";
-const database = new DatabaseRepository([process.env.DATABASE_URL!], process.env.DATABASE_KEYSPACE!) // FIX: in the future, it must be yml
-const create_category_repo = new CreateCategoryRepositoryImpl(database);
-const create_category_usecase = new createCategoryUsecase(create_category_repo);
-const read_category_id_repo = new ReadCategoryIdRepositoryImpl(database);
-const read_category_id_usecase = new readCategoryIdUsecase(read_category_id_repo);
-const read_categories_repo = new ReadCategoriesRepositoryImpl(database);
-const read_categories_usecase = new ReadCategoriesUsecase(read_categories_repo);
-const update_category_repo = new UpdateCategoryRepositoryImpl(database);
-const update_category_usecase = new updateCategoryUsecase(update_category_repo);
-const delete_category_repo = new DeleteCategoryRepositoryImpl(database);
-const delete_category_usecase = new deleteCategoryUsecase(delete_category_repo);
-
-export const CategoryController = new Elysia().group("/category", (app) =>
+import { UpdateCategoryUsecase } from "../usecases/category/update_category";
+import { ReadCategoryIdUsecase } from "../usecases/category/read_category_id";
+import { ReadCategoriesUsecase } from "../usecases/category/read_categories";
+import { CreateCategoryUsecase } from "../usecases/category/create_category";
+import { DeleteCategoryUsecase } from "../usecases/category/delete_category";
+import { container } from "@/app/api/[[...slugs]]/container";
+const read_categories_usecase = container.resolve(ReadCategoriesUsecase);
+const read_category_id_usecase = container.resolve(ReadCategoryIdUsecase);
+const create_category_usecase = container.resolve(CreateCategoryUsecase);
+const update_category_usecase = container.resolve(UpdateCategoryUsecase);
+const delete_category_usecase = container.resolve(DeleteCategoryUsecase);
+export const CategoryController = new Elysia().group("", (app) =>
   app
     .get(
       "/",

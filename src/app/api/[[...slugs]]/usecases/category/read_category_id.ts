@@ -1,13 +1,13 @@
+import { inject, injectable } from "tsyringe";
 import { CategoryResponseType } from "../../dtos/category";
-import { ReadCategoryIdRepository } from "../../repositories/category/read_category";
+import type { ReadCategoryIdRepository } from "../../repositories/category/read_category";
 import { Usecase } from "../interface";
 
-export class readCategoryIdUsecase implements Usecase<string, CategoryResponseType | null> {
-  read_category_repo: ReadCategoryIdRepository;
-
-  constructor(read_category_repo: ReadCategoryIdRepository) {
-    this.read_category_repo = read_category_repo;
-  }
+@injectable()
+export class ReadCategoryIdUsecase implements Usecase<string, CategoryResponseType | null> {
+  constructor(
+    @inject("UpdateCategoryRepository") private read_category_repo: ReadCategoryIdRepository
+  ) { }
 
   async execute(category_id: string): Promise<CategoryResponseType | null> {
     try {

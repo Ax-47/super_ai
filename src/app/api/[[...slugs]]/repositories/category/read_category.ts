@@ -1,13 +1,14 @@
-import { Category } from '../domain';
-import { DatabaseRepository } from '../infrastructures/database';
+import { inject, injectable } from 'tsyringe';
+import { Category } from '../../domain';
+import { DatabaseRepository } from '../../infrastructures/database';
 export interface ReadCategoryIdRepository {
   read(category_id: string): Promise<Category | null>
 }
+
+@injectable()
 export class ReadCategoryIdRepositoryImpl implements ReadCategoryIdRepository {
-  private database: DatabaseRepository;
-  constructor(database: DatabaseRepository) {
-    this.database = database;
-  }
+  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  ) { }
   async read(category_id: string): Promise<Category | null> {
     const query = `
       SELECT category_id, category_name, created_at, updated_at

@@ -1,12 +1,12 @@
-import { DatabaseRepository } from '../infrastructures/database';
+import { inject, injectable } from 'tsyringe';
+import { DatabaseRepository } from '../../infrastructures/database';
 export interface DeleteCategoryRepository {
   delete(category_id: string): Promise<void>
 }
+@injectable()
 export class DeleteCategoryRepositoryImpl implements DeleteCategoryRepository {
-  private database: DatabaseRepository;
-  constructor(database: DatabaseRepository) {
-    this.database = database;
-  }
+  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  ) { }
   async delete(category_id: string): Promise<void> {
     const query = `
       DELETE FROM ${this.database.getKeyspace()}.Categories

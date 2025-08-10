@@ -1,24 +1,21 @@
 import { Client } from 'cassandra-driver';
-
+import { inject, injectable } from 'tsyringe';
 export interface Paginated<T> {
   categories: T[];
   nextPagingState?: string;
 }
+@injectable()
 export class DatabaseRepository {
-  private client: Client;
-  private keyspace: string;
-  constructor(contactPoints: string[], keyspace: string) {
-    this.client = new Client({
-      contactPoints,
-      localDataCenter: 'datacenter1',
-      keyspace,
-    });
-    this.keyspace = keyspace;
+  constructor(
+    @inject(Client) private client: Client
+  ) {
+
+    this.client = client
   }
   getClient(): Client {
     return this.client
   }
   getKeyspace(): string {
-    return this.keyspace
+    return this.client.keyspace
   }
 }

@@ -1,16 +1,15 @@
 
-import { UpdateCategory } from '../domain';
-import { DatabaseRepository } from '../infrastructures/database';
+import { inject, injectable } from 'tsyringe';
+import { UpdateCategory } from '../../domain';
+import { DatabaseRepository } from '../../infrastructures/database';
 export interface UpdateCategoryRepository {
   update(category_id: string, category_name: string): Promise<UpdateCategory>;
 }
+@injectable()
 export class UpdateCategoryRepositoryImpl implements UpdateCategoryRepository {
-  private database: DatabaseRepository;
   constructor(
-    database: DatabaseRepository,
-  ) {
-    this.database = database;
-  }
+    @inject("DatabaseRepository") private database: DatabaseRepository
+  ) { }
   async update(category_id: string, category_name: string): Promise<UpdateCategory> {
     const updated_at = new Date();
 

@@ -1,16 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CreateCategory, Category } from '../domain';
-import { DatabaseRepository } from '../infrastructures/database';
+import { CreateCategory, Category } from '../../domain';
+import { DatabaseRepository } from '../../infrastructures/database';
+import { inject, injectable } from "tsyringe";
 export interface CreateCategoryRepository {
   create(cat: CreateCategory): Promise<Category>
 }
+@injectable()
 export class CreateCategoryRepositoryImpl implements CreateCategoryRepository {
-  private database: DatabaseRepository;
-  constructor(
-    database: DatabaseRepository,
-  ) {
-    this.database = database;
-  }
+  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  ) { }
   async create(cat: CreateCategory): Promise<Category> {
     const category_id = uuidv4();
     const created_at = new Date();

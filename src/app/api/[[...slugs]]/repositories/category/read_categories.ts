@@ -1,15 +1,16 @@
 import { QueryOptions } from 'cassandra-driver';
 import { DatabaseRepository, Paginated } from '../../infrastructures/database';
 import { Category } from '../../domain';
+import { inject, injectable } from 'tsyringe';
 
 export interface ReadCategoriesRepository {
   readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>>;
 }
+
+@injectable()
 export class ReadCategoriesRepositoryImpl implements ReadCategoriesRepository {
-  private database: DatabaseRepository;
-  constructor(database: DatabaseRepository) {
-    this.database = database;
-  }
+  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  ) { }
   async readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>> {
     const query = `
     SELECT category_id, category_name, created_at, updated_at

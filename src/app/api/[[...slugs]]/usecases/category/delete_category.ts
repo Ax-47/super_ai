@@ -1,12 +1,13 @@
 
-import { DeleteCategoryRepository } from "../../repositories/category/delete_category";
+import { inject, injectable } from "tsyringe";
+import type { DeleteCategoryRepository } from "../../repositories/category/delete_category";
 import { Usecase } from "../interface";
 
-export class deleteCategoryUsecase implements Usecase<string, void> {
-  delete_category_repo: DeleteCategoryRepository;
-  constructor(read_category_repo: DeleteCategoryRepository) {
-    this.delete_category_repo = read_category_repo;
-  }
+@injectable()
+export class DeleteCategoryUsecase implements Usecase<string, void> {
+  constructor(
+    @inject("DeleteCategoryRepository") private delete_category_repo: DeleteCategoryRepository
+  ) { }
   async execute(category_id: string): Promise<void> {
     try {
       await this.delete_category_repo.delete(category_id);
