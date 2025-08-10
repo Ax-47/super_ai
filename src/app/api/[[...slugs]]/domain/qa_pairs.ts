@@ -8,3 +8,4 @@ export interface QAPair {
   created_at: Date;
   updated_at: Date;
 }
+export type QAPairInsert = Omit<QAPair, "qa_pair_id" | "created_at" | "updated_at">;
