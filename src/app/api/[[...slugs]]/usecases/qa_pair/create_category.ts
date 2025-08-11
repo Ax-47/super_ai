@@ -17,20 +17,14 @@ export class CreateQAPairUsecase implements Usecase<CreateQAPairBodyType, QAPair
       throw new Error("Category not found");
     }
 
-    try {
-      const qa_pair = await this.repo.insert_to_database({
-        answer,
-        question,
-        category_id,
-        category_name: category.category_name,
-      });
+    const qa_pair = await this.repo.insert_to_database({
+      answer,
+      question,
+      category_id,
+      category_name: category.category_name,
+    });
 
-      await this.repo.insert_to_vector_database(qa_pair);
-      return qa_pair;
-
-    } catch (err) {
-      console.error("🚨 Failed to create QA pair:", { category_id, error: err });
-      throw new Error("UsecaseError: Failed to create QA pair");
-    }
+    await this.repo.insert_to_vector_database(qa_pair);
+    return qa_pair;
   }
 }

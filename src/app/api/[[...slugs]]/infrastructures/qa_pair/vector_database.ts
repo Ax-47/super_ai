@@ -12,7 +12,7 @@ export class QAPairVectorDatabaseRepositoryImpl implements QAPairVectorDatabaseR
   ) { }
   async create({ qa_pair_id, category_name, question, answer, created_at }: QAPair): Promise<void> {
     return this.vector_database_repo.addDocument(
-      `qa_pairs:${category_name}`,
+      `qa_pairs-${category_name}`,
       qa_pair_id,
       question,
       {

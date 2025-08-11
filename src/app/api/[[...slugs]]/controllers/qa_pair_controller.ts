@@ -13,8 +13,8 @@ export const QAPairController = new Elysia().group("", (app) =>
           const res = await create_qa_pair_usecase.execute(body);
           return res;
         } catch (err) {
-          console.error("❌ Error in create category:", err);
-          return status(500, { error: "Internal Server Error: Unable to create category." });
+          console.error("❌ Error in create QA Pair:", err);
+          return status(500, { error: "Internal Server Error: Unable to create QA Pair." });
         }
       },
       {

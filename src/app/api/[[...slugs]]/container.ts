@@ -23,7 +23,13 @@ container.register(Client, {
 
 container.register(ChromaClient, {
   useValue: new ChromaClient(
-    { path: process.env.VECTOR_DATABASE_URL! }
+    {
+      ssl: false,
+      host: "localhost",
+      port: 8000,
+      tenant: "default_tenant",
+      database: "default_database",
+    }
   )
 });
 container.register("DatabaseRepository", { useClass: DatabaseRepository });

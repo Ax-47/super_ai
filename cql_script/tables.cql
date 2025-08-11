@@ -39,8 +39,8 @@ CREATE TABLE SuperAI.Categories (
 
 CREATE TABLE SuperAI.qa_pairs (
    qa_pair_id uuid,
-   question uuid,
-   answer uuid,
+   question TEXT,
+   answer TEXT,
    category_id uuid,
    category_name TEXT,
    created_at timestamp,

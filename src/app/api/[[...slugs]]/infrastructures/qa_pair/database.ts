@@ -3,6 +3,7 @@ import { DatabaseRepository } from '../database';
 import { Category, CreateCategory, QAPair, QAPairInsert, UpdateCategory } from '../../domain';
 import { v4 as uuidv4 } from 'uuid';
 import { QueryOptions } from 'cassandra-driver';
+import { types } from "cassandra-driver";
 export interface Paginated<T> {
   categories: T[];
   nextPagingState?: string;
@@ -23,20 +24,19 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
     const qa_pair_id = uuidv4();
     const created_at = new Date();
     const updated_at = created_at;
-
     const query = `
   INSERT INTO ${this.database_repo.getKeyspace()}.qa_pairs (
     qa_pair_id, question, answer, category_id, category_name, created_at, updated_at
   ) VALUES (?, ?, ?, ?, ?, ?, ?)
 `;
     const params = [
-      qa_pair_id,
+      types.Uuid.fromString(qa_pair_id),
       question,
       answer,
-      category_id,
+      types.Uuid.fromString(category_id),
       category_name,
       created_at,
-      updated_at
+      updated_at,
     ];
 
     const new_qa_pair: QAPair = {
@@ -48,17 +48,8 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
       created_at,
       updated_at,
     };
-    try {
-      await this.database_repo.getClient().execute(query, params, { prepare: true });
-      return new_qa_pair
-    } catch (err) {
-      console.error("Failed to insert category:", {
-        category_id: new_qa_pair.category_id,
-        category_name: new_qa_pair.category_name,
-        error: err,
-      });
-      throw new Error("DatabaseError: Unable to create category.");
-    }
+    await this.database_repo.getClient().execute(query, params, { prepare: true });
+    return new_qa_pair
   }
 
   async delete(category_id: string): Promise<void> {
