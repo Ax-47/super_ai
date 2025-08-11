@@ -1,7 +1,7 @@
 import { QueryOptions } from 'cassandra-driver';
 import { DatabaseRepository, Paginated } from '../../infrastructures/database';
 import { Category } from '../../domain';
-import { inject, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 
 export interface ReadCategoriesRepository {
   readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>>;
@@ -9,7 +9,7 @@ export interface ReadCategoriesRepository {
 
 @injectable()
 export class ReadCategoriesRepositoryImpl implements ReadCategoriesRepository {
-  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  constructor(private database: DatabaseRepository
   ) { }
   async readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>> {
     const query = `

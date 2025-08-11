@@ -1,4 +1,4 @@
-import { inject, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { Category } from '../../domain';
 import { DatabaseRepository } from '../../infrastructures/database';
 export interface ReadCategoryIdRepository {
@@ -7,7 +7,7 @@ export interface ReadCategoryIdRepository {
 
 @injectable()
 export class ReadCategoryIdRepositoryImpl implements ReadCategoryIdRepository {
-  constructor(@inject("DatabaseRepository") private database: DatabaseRepository
+  constructor(private database: DatabaseRepository
   ) { }
   async read(category_id: string): Promise<Category | null> {
     const query = `

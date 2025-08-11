@@ -1,5 +1,5 @@
 
-import { inject, injectable } from 'tsyringe';
+import { injectable } from 'tsyringe';
 import { UpdateCategory } from '../../domain';
 import { DatabaseRepository } from '../../infrastructures/database';
 export interface UpdateCategoryRepository {
@@ -8,7 +8,7 @@ export interface UpdateCategoryRepository {
 @injectable()
 export class UpdateCategoryRepositoryImpl implements UpdateCategoryRepository {
   constructor(
-    @inject("DatabaseRepository") private database: DatabaseRepository
+    private database: DatabaseRepository
   ) { }
   async update(category_id: string, category_name: string): Promise<UpdateCategory> {
     const updated_at = new Date();
