@@ -1,5 +1,5 @@
 import Elysia, { t } from "elysia";
-export const HelloWorldController = new Elysia().group('/hello',
+export const HelloWorldController = new Elysia().group('',
   (app) =>
     app
       .get('/', () => "hello")

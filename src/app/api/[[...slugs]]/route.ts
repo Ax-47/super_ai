@@ -16,6 +16,7 @@ const app = new Elysia({ prefix: '/api' })
       }
     })
   )
+  .group("", app => app.use(HelloWorldController))
   .group("/category", (app) => app.use(CategoryController))
   .group("/qa_pair", (app) => app.use(QAPairController))
 export const GET = app.handle;
