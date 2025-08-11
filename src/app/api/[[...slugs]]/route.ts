@@ -4,6 +4,7 @@ import 'reflect-metadata';
 import { HelloWorldController } from './controllers/hello_world';
 // import { PromptController } from './controllers/chat';
 import { CategoryController } from './controllers/category';
+import { QAPairController } from './controllers/qa_pair_controller';
 
 const app = new Elysia({ prefix: '/api' })
   .use(
@@ -14,8 +15,9 @@ const app = new Elysia({ prefix: '/api' })
         ]
       }
     })
-  ).group("/category", (app) => app.use(CategoryController))
-
+  )
+  .group("/category", (app) => app.use(CategoryController))
+  .group("/qa_pair", (app) => app.use(QAPairController))
 export const GET = app.handle;
 export const POST = app.handle;
 export const PATCH = app.handle;

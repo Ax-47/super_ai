@@ -1,67 +1,32 @@
-import { v4 as uuidv4 } from 'uuid';
-import { QAPair, QAPairInsert } from '../../domain';
-import { DatabaseRepository } from '../../infrastructures/database';
-import { injectable } from "tsyringe";
-import { VectorDatabaseRepository } from '../../infrastructures/vector_db';
-export interface CreateCategoryRepository {
-  create(qa_pair: QAPairInsert): Promise<QAPair>
+import { Category, QAPair, QAPairInsert } from '../../domain';
+import { inject, injectable } from "tsyringe";
+import type { QAPairDatabaseRepository } from '../../infrastructures/qa_pair/database';
+import type { QAPairVectorDatabaseRepository } from '../../infrastructures/qa_pair/vector_database';
+import type { CategoryDatabaseRepository } from '../../infrastructures/category/database';
+export interface CreateQAPairRepository {
+  find_category(cat_id: string): Promise<Category | null>
+  insert_to_vector_database(qa_pair: QAPair): Promise<void>;
+  insert_to_database(qa_pair: QAPairInsert): Promise<QAPair>;
 }
 @injectable()
-export class CreateCategoryRepositoryImpl implements CreateCategoryRepository {
+export class CreateQAPairRepositoryImpl implements CreateQAPairRepository {
   constructor(
-    private database: DatabaseRepository,
-    private vectorDatabase: VectorDatabaseRepository,
+    @inject("QAPairDatabaseRepository")
+    private qa_pair_database_repo: QAPairDatabaseRepository,
+    @inject("CategoryDatabaseRepository")
+    private category_database_repo: CategoryDatabaseRepository,
+    @inject("QAPairVectorDatabaseRepository")
+    private vector_database_repo: QAPairVectorDatabaseRepository,
   ) { }
-  async create(qa_pair: QAPairInsert): Promise<QAPair> {
-    const qa_pair_id = uuidv4();
-    const created_at = new Date();
-    const updated_at = created_at;
-
-    const query = `
-  INSERT INTO ${this.database.getKeyspace()}.qa_pairs (
-    qa_pair_id, question, answer, category_id, category_name, created_at, updated_at
-  ) VALUES (?, ?, ?, ?, ?, ?, ?)
-`;
-    const metadata = {
-      answer: qa_pair.answer,
-      category: qa_pair.category_name,
-      created_at: created_at.toISOString(),
-    };
-    this.vectorDatabase.addDocument(
-      `qa_pairs:${qa_pair.category_name}`,
-      qa_pair_id,
-      qa_pair.question,
-      metadata
-    )
-    const params = [
-      qa_pair_id,
-      qa_pair.question,
-      qa_pair.answer,
-      qa_pair.category_id,
-      qa_pair.category_name,
-      created_at,
-      updated_at
-    ];
-    const new_qa_pair: QAPair = {
-      qa_pair_id,
-      question: qa_pair.question,
-      answer: qa_pair.answer,
-      category_id: qa_pair.category_id,
-      category_name: qa_pair.category_name,
-      created_at,
-      updated_at,
-    };
-
-    try {
-      await this.database.getClient().execute(query, params, { prepare: true });
-      return new_qa_pair
-    } catch (err) {
-      console.error("Failed to insert category:", {
-        category_id: qa_pair.category_id,
-        category_name: qa_pair.category_name,
-        error: err,
-      });
-      throw new Error("DatabaseError: Unable to create category.");
-    }
+  async find_category(cat_id: string): Promise<Category | null> {
+    return this.category_database_repo.read(cat_id)
   }
+  async insert_to_vector_database(qa_pair: QAPair): Promise<void> {
+    return this.vector_database_repo.create(qa_pair)
+  }
+  async insert_to_database(qa_pair: QAPairInsert): Promise<QAPair> {
+    return this.qa_pair_database_repo.create(qa_pair)
+  }
+
+
 }

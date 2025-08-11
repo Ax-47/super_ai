@@ -1,42 +1,17 @@
 
-import { injectable } from 'tsyringe';
+import { inject, injectable } from 'tsyringe';
 import { UpdateCategory } from '../../domain';
-import { DatabaseRepository } from '../../infrastructures/database';
+import type { CategoryDatabaseRepository } from '../../infrastructures/category/database';
 export interface UpdateCategoryRepository {
   update(category_id: string, category_name: string): Promise<UpdateCategory>;
 }
 @injectable()
 export class UpdateCategoryRepositoryImpl implements UpdateCategoryRepository {
   constructor(
-    private database: DatabaseRepository
+    @inject("CategoryDatabaseRepository")
+    private readonly database_repo: CategoryDatabaseRepository
   ) { }
   async update(category_id: string, category_name: string): Promise<UpdateCategory> {
-    const updated_at = new Date();
-
-    const query = `
-    UPDATE ${this.database.getKeyspace()}.Categories
-    SET category_name = ?, updated_at = ?
-    WHERE category_id = ?
-  `;
-
-    const params = [category_name, updated_at, category_id];
-
-    const new_cat: UpdateCategory = {
-      category_id,
-      category_name,
-      updated_at,
-    };
-
-    try {
-      await this.database.getClient().execute(query, params, { prepare: true });
-      return new_cat;
-    } catch (err) {
-      console.error("Failed to update category:", {
-        category_id,
-        category_name,
-        error: err,
-      });
-      throw new Error("DatabaseError: Unable to update category.");
-    }
+    return this.database_repo.update(category_id, category_name)
   }
 }

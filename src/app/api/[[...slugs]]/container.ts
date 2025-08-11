@@ -8,6 +8,11 @@ import { ReadCategoryIdRepository, ReadCategoryIdRepositoryImpl } from "./reposi
 import { CreateCategoryRepository, CreateCategoryRepositoryImpl } from "./repositories/category/create_category";
 import { DeleteCategoryRepository, DeleteCategoryRepositoryImpl } from "./repositories/category/delete_category";
 import { VectorDatabaseRepository } from "./infrastructures/vector_db";
+import { CategoryDatabaseRepository, CategoryDatabaseRepositoryImpl } from "./infrastructures/category/database";
+import { ChromaClient } from "chromadb";
+import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositories/qa_pair/qa_pair_create";
+import { QAPairDatabaseRepository, QAPairDatabaseRepositoryImpl } from "./infrastructures/qa_pair/database";
+import { QAPairVectorDatabaseRepository, QAPairVectorDatabaseRepositoryImpl } from "./infrastructures/qa_pair/vector_database";
 container.register(Client, {
   useValue: new Client({
     contactPoints: [process.env.DATABASE_URL!],
@@ -15,8 +20,18 @@ container.register(Client, {
     keyspace: process.env.DATABASE_KEYSPACE!
   })
 });
+
+container.register(ChromaClient, {
+  useValue: new ChromaClient(
+    { path: process.env.VECTOR_DATABASE_URL! }
+  )
+});
 container.register("DatabaseRepository", { useClass: DatabaseRepository });
+container.register<CategoryDatabaseRepository>("CategoryDatabaseRepository", { useClass: CategoryDatabaseRepositoryImpl });
+container.register<QAPairDatabaseRepository>("QAPairDatabaseRepository", { useClass: QAPairDatabaseRepositoryImpl });
 container.register("VectorDatabaseRepository", { useClass: VectorDatabaseRepository });
+container.register<QAPairVectorDatabaseRepository>("QAPairVectorDatabaseRepository", { useClass: QAPairVectorDatabaseRepositoryImpl });
+
 container.register<ReadCategoriesRepository>("ReadCategoriesRepository", {
   useClass: ReadCategoriesRepositoryImpl
 });
@@ -35,5 +50,9 @@ container.register<UpdateCategoryRepository>("UpdateCategoryRepository", {
 
 container.register<DeleteCategoryRepository>("DeleteCategoryRepository", {
   useClass: DeleteCategoryRepositoryImpl
+});
+
+container.register<CreateQAPairRepository>("CreateQAPairRepository", {
+  useClass: CreateQAPairRepositoryImpl
 });
 export { container };

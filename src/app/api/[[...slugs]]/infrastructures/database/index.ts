@@ -7,7 +7,7 @@ export interface Paginated<T> {
 @injectable()
 export class DatabaseRepository {
   constructor(
-    @inject(Client) private client: Client
+    @inject(Client) private readonly client: Client
   ) {
     this.client = client
   }

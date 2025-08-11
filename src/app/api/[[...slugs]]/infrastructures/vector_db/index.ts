@@ -1,20 +1,19 @@
 import { ChromaClient, Collection, EmbeddingFunction } from "chromadb";
+import { inject, injectable } from "tsyringe";
 
 type Metadata = { [key: string]: string | number | boolean | null };
-
+@injectable()
 export class VectorDatabaseRepository<T extends Metadata = Metadata> {
-  private client: ChromaClient;
   private collections: Map<string, Collection>;
-
-  constructor(baseUrl: string) {
-    this.client = new ChromaClient({ path: baseUrl });
+  constructor(
+    @inject(ChromaClient) private readonly client: ChromaClient
+  ) {
     this.collections = new Map();
   }
 
   public async getCollection(name: string, embeddingFunction?: EmbeddingFunction): Promise<Collection> {
-    if (this.collections.has(name)) {
+    if (this.collections.has(name))
       return this.collections.get(name)!;
-    }
 
     const collection = await this.client.getOrCreateCollection({
       name,
@@ -55,6 +54,36 @@ export class VectorDatabaseRepository<T extends Metadata = Metadata> {
     });
   }
 
+  public async updateDocument(
+    collectionName: string,
+    id: string,
+    document: string,
+    metadata?: T
+  ): Promise<void> {
+    const collection = await this.getCollection(collectionName);
+
+    // เช็กว่ามีเอกสารนี้อยู่รึเปล่า
+    const existing = await collection.get({ ids: [id] });
+    if (!existing || (existing.ids?.length ?? 0) === 0) {
+      throw new Error(`Document with id "${id}" not found`);
+    }
+
+    // อัปเดต
+    await collection.add({
+      ids: [id],
+      documents: [document],
+      metadatas: metadata ? [metadata] : undefined,
+    });
+  }
+  public async deleteDocument(
+    collectionName: string,
+    id: string
+  ): Promise<void> {
+    const collection = await this.getCollection(collectionName);
+    await collection.delete({
+      ids: [id]
+    });
+  }
   public async search(
     collectionName: string,
     query: string,

@@ -14,8 +14,7 @@ interface Output {
 @injectable()
 export class ReadCategoriesUsecase implements Usecase<Input, Output> {
   constructor(
-    @inject("ReadCategoriesRepository")
-    private readonly read_categories_repo: ReadCategoriesRepository
+    @inject("ReadCategoriesRepository") private read_categories_repo: ReadCategoriesRepository
   ) { }
 
   async execute({ limit, pagingState }: Input): Promise<Output> {
