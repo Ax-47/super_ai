@@ -46,7 +46,7 @@ export const CategoryController = new Elysia().group("", (app) =>
       }
     )
     .get(
-      "/:id",
+      "/:category_id",
       async ({ params: { category_id }, status }) => {
         try {
           const result = await read_category_id_usecase.execute(category_id);
@@ -93,7 +93,7 @@ export const CategoryController = new Elysia().group("", (app) =>
       }
     )
     .put(
-      "/:id",
+      "/:category_id",
       async ({ params: { category_id }, body, status }) => {
         try {
           const res = await update_category_usecase.execute({
@@ -120,7 +120,7 @@ export const CategoryController = new Elysia().group("", (app) =>
       }
     )
     .delete(
-      "/:id",
+      "/:category_id",
       async ({ params: { category_id }, status }) => {
         try {
           await delete_category_usecase.execute(category_id);
