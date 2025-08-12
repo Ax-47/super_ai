@@ -56,4 +56,5 @@ export const QAPairController = new Elysia().group("", (app) =>
           tags: ["QA-Pair"]
         }
       }
-    ))
+    )
+)

@@ -1,16 +1,30 @@
+import { inject, injectable } from "tsyringe";
 import { PromptUsecasePromptType } from "../dtos/prompt";
-import { PromptRepository } from "../repositories/chat";
-import { Usecase } from "./interface";
+import type { ChatRepository } from "../repositories/chat";
 
-export class chatUsecase implements Usecase<PromptUsecasePromptType, AsyncGenerator<string, void, unknown>> {
-  chat_repo: PromptRepository;
+@injectable()
+export class ChatUsecase {
+  constructor(
+    @inject("ChatRepository") private chat_repo: ChatRepository
 
-  constructor(chat_repo: PromptRepository) {
-    this.chat_repo = chat_repo;
-  }
+  ) { }
+  async *execute({ prompt }: PromptUsecasePromptType): AsyncGenerator<string, void, unknown> {
+    const categoryListStr = await this.chat_repo.getCategoryListString();
+    const classifierPrompt = this.chat_repo.buildClassifierPrompt(prompt, categoryListStr);
+    let res = "";
+    for await (const chunk of this.chat_repo.prompt(classifierPrompt))
+      res += chunk;
+    const predictedCategory = res.trim().replace("-", "").trim();
 
-  execute({ prompt }: PromptUsecasePromptType): Promise<AsyncGenerator<string, void, unknown>> {
-    const stream = this.chat_repo.prompt(prompt);
-    return Promise.resolve(stream);
+    const { metadatas } = await this.chat_repo.search(predictedCategory, prompt);
+    if (!metadatas || !metadatas[0] || !metadatas[0].answer) {
+      yield "ขออภัย ฉันไม่สามารถหาข้อมูลที่ตรงกับคำถามของคุณได้ในขณะนี้";
+      return;
+    }
+    const retrievedAnswer = (metadatas[0]).answer;
+    const generatorPrompt = this.chat_repo.buildGeneratorPrompt(prompt, retrievedAnswer.toString());
+    for await (const chunk of this.chat_repo.prompt(generatorPrompt))
+      yield chunk;
+
   }
 }

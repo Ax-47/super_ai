@@ -1,34 +1,20 @@
-import Elysia from "elysia";
+import Elysia, { sse } from "elysia";
 import { PromptUsecasePrompt } from "../dtos/prompt";
-import { PromptRepositoryImpl } from "../repositories/chat";
-import { chatUsecase } from "../usecases/prompt";
-import { sse } from "./sse"
-import { VectorDatabaseRepository } from "../infrastructures/vector_db";
-import { DatabaseRepository } from "../infrastructures/database";
-
-// const database = new DatabaseRepository([process.env.DATABASE_URL!], process.env.DATABASE_KEYSPACE!) // FIX: in the future, it must be yml
-// const vector_db = new VectorDatabaseRepository(process.env.VECTOR_DATABASE_URL!)
-// const repo = new PromptRepositoryImpl(process.env.LLMAPIKEY!, process.env.LLMMODEL!, vector_db, database)
-// const usecase = new chatUsecase(repo)
-// type PromptSSEContext = {
-//   set: { headers: Record<string, string> };
-//   body: {
-//     prompt: string,
-//   };
-// };
-// export const PromptController = new Elysia().group("/chat", (app) =>
-//   app.post(
-//     "/",
-//     sse<PromptSSEContext, string>(
-//       async function* ({ body }) {
-//         const stream = await usecase.execute(body);
-//         for await (const chunk of stream) {
-//           yield chunk;
-//         }
-//       }
-//     ),
-//     {
-//       body: PromptUsecasePrompt,
-//     }
-//   )
-// );
+import { ChatUsecase } from "../usecases/prompt";
+import { container } from "@/app/api/[[...slugs]]/container";
+const chat_usecase = container.resolve(ChatUsecase);
+export const PromptController = new Elysia().group("", (app) =>
+  app.post(
+    "/", async function* ({ body }) {
+      const stream = await chat_usecase.execute(body);
+      for await (const chunk of stream) {
+        yield sse({ event: "message", data: { message: chunk } });
+      }
+    },
+    {
+      body: PromptUsecasePrompt,
+      description: "Receive prompt and return streaming response via SSE",
+      tags: ["Chat"],
+    }
+  )
+);

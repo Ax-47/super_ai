@@ -14,6 +14,9 @@ import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositori
 import { QAPairDatabaseRepository, QAPairDatabaseRepositoryImpl } from "./infrastructures/qa_pair/database";
 import { QAPairVectorDatabaseRepository, QAPairVectorDatabaseRepositoryImpl } from "./infrastructures/qa_pair/vector_database";
 import { ReadQAPairsRepository, ReadQAPairsRepositoryImpl } from "./repositories/qa_pair/read_qa_pairs";
+import { GoogleGenAI } from "@google/genai";
+import { ChatRepository, ChatRepositoryImpl } from "./repositories/chat";
+import { LLMRepository, LLMRepositoryImpl } from "./infrastructures/llm";
 container.register(Client, {
   useValue: new Client({
     contactPoints: [process.env.DATABASE_URL!],
@@ -33,12 +36,24 @@ container.register(ChromaClient, {
     }
   )
 });
+
+container.register(Client, {
+  useValue: new Client({
+    contactPoints: [process.env.DATABASE_URL!],
+    localDataCenter: "datacenter1",
+    keyspace: process.env.DATABASE_KEYSPACE!
+  })
+});
+container.register(GoogleGenAI, { useValue: new GoogleGenAI({ apiKey: process.env.LLMAPIKEY }) });
+container.register("MODEL_NAME", { useValue: process.env.LLMMODEL });
 container.register("DatabaseRepository", { useClass: DatabaseRepository });
 container.register<CategoryDatabaseRepository>("CategoryDatabaseRepository", { useClass: CategoryDatabaseRepositoryImpl });
 container.register<QAPairDatabaseRepository>("QAPairDatabaseRepository", { useClass: QAPairDatabaseRepositoryImpl });
 container.register("VectorDatabaseRepository", { useClass: VectorDatabaseRepository });
 container.register<QAPairVectorDatabaseRepository>("QAPairVectorDatabaseRepository", { useClass: QAPairVectorDatabaseRepositoryImpl });
-
+container.register<LLMRepository>("LLMRepository", {
+  useClass: LLMRepositoryImpl
+});
 container.register<ReadCategoriesRepository>("ReadCategoriesRepository", {
   useClass: ReadCategoriesRepositoryImpl
 });
@@ -66,5 +81,8 @@ container.register<CreateQAPairRepository>("CreateQAPairRepository", {
 container.register<ReadQAPairsRepository>("ReadQAPairsRepository", {
   useClass: ReadQAPairsRepositoryImpl
 });
+container.register<ChatRepository>("ChatRepository", {
+  useClass: ChatRepositoryImpl
+})
 
 export { container };

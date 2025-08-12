@@ -1,7 +1,7 @@
 import { ChromaClient, Collection, EmbeddingFunction } from "chromadb";
 import { inject, injectable } from "tsyringe";
 
-type Metadata = { [key: string]: string | number | boolean | null };
+export type Metadata = { [key: string]: string | number | boolean | null };
 @injectable()
 export class VectorDatabaseRepository<T extends Metadata = Metadata> {
   private collections: Map<string, Collection>;
