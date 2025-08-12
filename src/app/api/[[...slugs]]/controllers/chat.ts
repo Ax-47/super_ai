@@ -8,7 +8,10 @@ export const PromptController = new Elysia().group("", (app) =>
     "/", async function* ({ body }) {
       const stream = chat_usecase.execute(body);
       for await (const chunk of stream) {
-        yield sse({ event: "message", data: { message: chunk } });
+        yield sse({
+          event: "message",
+          data: { message: chunk },
+        });
       }
     },
     {
@@ -18,3 +21,4 @@ export const PromptController = new Elysia().group("", (app) =>
     }
   )
 );
+
