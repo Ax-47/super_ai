@@ -6,7 +6,7 @@ const chat_usecase = container.resolve(ChatUsecase);
 export const PromptController = new Elysia().group("", (app) =>
   app.post(
     "/", async function* ({ body }) {
-      const stream = await chat_usecase.execute(body);
+      const stream = chat_usecase.execute(body);
       for await (const chunk of stream) {
         yield sse({ event: "message", data: { message: chunk } });
       }
