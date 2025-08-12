@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Usecase } from "../interface";
 import { CreateQAPairBodyType, QAPairResponseType } from "../../dtos/qa_pair";
-import type { CreateQAPairRepository } from "../../repositories/qa_pair/qa_pair_create";
+import type { CreateQAPairRepository } from "../../repositories/qa_pair/create_qa_pair";
 
 @injectable()
 export class CreateQAPairUsecase implements Usecase<CreateQAPairBodyType, QAPairResponseType> {

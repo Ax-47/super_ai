@@ -10,7 +10,7 @@ import { DeleteCategoryRepository, DeleteCategoryRepositoryImpl } from "./reposi
 import { VectorDatabaseRepository } from "./infrastructures/vector_db";
 import { CategoryDatabaseRepository, CategoryDatabaseRepositoryImpl } from "./infrastructures/category/database";
 import { ChromaClient } from "chromadb";
-import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositories/qa_pair/qa_pair_create";
+import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositories/qa_pair/create_qa_pair";
 import { QAPairDatabaseRepository, QAPairDatabaseRepositoryImpl } from "./infrastructures/qa_pair/database";
 import { QAPairVectorDatabaseRepository, QAPairVectorDatabaseRepositoryImpl } from "./infrastructures/qa_pair/vector_database";
 container.register(Client, {

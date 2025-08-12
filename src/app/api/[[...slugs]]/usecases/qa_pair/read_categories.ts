@@ -12,11 +12,10 @@ interface Output {
 }
 
 @injectable()
-export class ReadCategoriesUsecase implements Usecase<Input, Output> {
+export class ReadQAPairsUsecase implements Usecase<Input, Output> {
   constructor(
     @inject("ReadCategoriesRepository") private read_categories_repo: ReadCategoriesRepository
   ) { }
-
   async execute({ limit, pagingState }: Input): Promise<Output> {
     try {
       const result = await this.read_categories_repo.readAllPaginated(limit, pagingState);
