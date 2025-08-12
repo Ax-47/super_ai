@@ -13,6 +13,7 @@ import { ChromaClient } from "chromadb";
 import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositories/qa_pair/create_qa_pair";
 import { QAPairDatabaseRepository, QAPairDatabaseRepositoryImpl } from "./infrastructures/qa_pair/database";
 import { QAPairVectorDatabaseRepository, QAPairVectorDatabaseRepositoryImpl } from "./infrastructures/qa_pair/vector_database";
+import { ReadQAPairsRepository, ReadQAPairsRepositoryImpl } from "./repositories/qa_pair/read_qa_pairs";
 container.register(Client, {
   useValue: new Client({
     contactPoints: [process.env.DATABASE_URL!],
@@ -61,4 +62,9 @@ container.register<DeleteCategoryRepository>("DeleteCategoryRepository", {
 container.register<CreateQAPairRepository>("CreateQAPairRepository", {
   useClass: CreateQAPairRepositoryImpl
 });
+
+container.register<ReadQAPairsRepository>("ReadQAPairsRepository", {
+  useClass: ReadQAPairsRepositoryImpl
+});
+
 export { container };

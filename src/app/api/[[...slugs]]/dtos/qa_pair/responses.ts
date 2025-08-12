@@ -14,11 +14,11 @@ export const UpdateCategoryResponseDTO = t.Object({
   updated_at: Timestamp,
 });
 
-export const ReadCategoriesResponseDTO = t.Object({
-  categories: t.Array(QAPairResponseDTO),
+export const ReadQAPairsResponseDTO = t.Object({
+  qa_pairs: t.Array(QAPairResponseDTO),
   nextPagingState: t.Optional(t.String()),
 });
 
 export type QAPairResponseType = Static<typeof QAPairResponseDTO>;
 export type UpdateCategoryResponseType = Static<typeof UpdateCategoryResponseDTO>;
-export type ReadCategoriesResponseType = Static<typeof ReadCategoriesResponseDTO>;
+export type ReadQAPairsResponseType = Static<typeof ReadQAPairsResponseDTO>;

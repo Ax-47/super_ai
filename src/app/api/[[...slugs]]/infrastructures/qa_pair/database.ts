@@ -5,13 +5,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { QueryOptions } from 'cassandra-driver';
 import { types } from "cassandra-driver";
 export interface Paginated<T> {
-  categories: T[];
+  qa_pairs: T[];
   nextPagingState?: string;
 }
 export interface QAPairDatabaseRepository {
   create(cat: CreateCategory): Promise<QAPair>;
   delete(category_id: string): Promise<void>;
-  readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>>;
+  read_all_paginated(
+    limit: number,
+    pagingState?: string,
+    categoryId?: string
+  ): Promise<Paginated<QAPair>>
   read(category_id: string): Promise<Category | null>
   update(category_id: string, category_name: string): Promise<UpdateCategory>;
 }
@@ -70,11 +74,22 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
     }
   }
 
-  async readAllPaginated(limit: number, pagingState?: string): Promise<Paginated<Category>> {
-    const query = `
-    SELECT category_id, category_name, created_at, updated_at
-    FROM ${this.database_repo.getKeyspace()}.Categories
+  async read_all_paginated(
+    limit: number,
+    pagingState?: string,
+    categoryId?: string
+  ): Promise<Paginated<QAPair>> {
+    let query = `
+    SELECT qa_pair_id, question, answer, category_id, category_name, created_at, updated_at
+    FROM ${this.database_repo.getKeyspace()}.qa_pairs
   `;
+
+    const params: (string | number | boolean | null)[] = [];
+
+    if (categoryId) {
+      query += ` WHERE category_id = ?`;
+      params.push(categoryId);
+    }
 
     try {
       const queryOptions: QueryOptions = {
@@ -84,11 +99,14 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
 
       if (pagingState) {
         const decodedPagingState = Buffer.from(pagingState, 'base64');
-        queryOptions.pageState = decodedPagingState.toString(); // base64 -> original string
+        queryOptions.pageState = decodedPagingState.toString();
       }
 
-      const result = await this.database_repo.getClient().execute(query, [], queryOptions);
-      const categories: Category[] = result.rows.map((row) => ({
+      const result = await this.database_repo.getClient().execute(query, params, queryOptions);
+      const qa_pairs: QAPair[] = result.rows.map((row) => ({
+        qa_pair_id: row.get('qa_pair_id').toString(),
+        question: row.get('question'),
+        answer: row.get('answer'),
         category_id: row.get('category_id').toString(),
         category_name: row.get('category_name'),
         created_at: row.get('created_at'),
@@ -100,15 +118,14 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
         : undefined;
 
       return {
-        categories,
+        qa_pairs,
         nextPagingState: nextPage,
       };
     } catch (err) {
-      console.error("❌ Failed to read categories with paging:", { limit, pagingState, error: err });
-      throw new Error("DatabaseError: Unable to read categories with paging.");
+      console.error("❌ Failed to read qa_pairs with paging:", { limit, pagingState, categoryId, error: err });
+      throw new Error("DatabaseError: Unable to read qa_pairs with paging.");
     }
   }
-
   async read(category_id: string): Promise<Category | null> {
     const query = `
       SELECT category_id, category_name, created_at, updated_at
