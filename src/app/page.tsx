@@ -145,6 +145,7 @@ export default function ChatPage() {
                 Category
               </Typography>
             </Box>
+            {output === ""&&
             <Box
               sx={{
                 display: "flex",
@@ -190,7 +191,9 @@ export default function ChatPage() {
                   </CardActionArea>
                 </Card>
               ))}
-            </Box>
+            </Box>}
+
+            {output !== ""&& <div className="text-black ">{output}</div>}
           </Container>
 
           <Box
@@ -205,6 +208,8 @@ export default function ChatPage() {
             <TextField
               variant="outlined"
               fullWidth
+              onChange={(e) => setPrompt(e.target.value)}
+              onSubmit={handleSubmit}
               placeholder=" Type your message"
               slotProps={{
                 input: {
@@ -214,7 +219,10 @@ export default function ChatPage() {
                     </IconButton>
                   ),
                   endAdornment: (
-                    <IconButton>
+                    <IconButton 
+
+                      onClick={handleSubmit}
+                    >
                       <RiMicLine />
                     </IconButton>
                   ),
