@@ -65,28 +65,16 @@ export default function ChatPage() {
     setLoading(true);
 
     try {
-      const {data} = await api.chat.post({ prompt });
+      const {data} = await api.chat[""].post({ prompt });
       if (!data) {
         setOutput("❌ Error connecting to chat stream");
         setLoading(false);
         return;
       }
       for await (const chunk of data) {
-        const chunkStr = typeof chunk === "string" ? chunk : chunk.toString();
-        const lines = chunkStr.split("\n");
-        let eventType = "";
-        let dataLine = "";
-        for (const line of lines) {
-            if (line.startsWith("event: ")) {
-              eventType = line.slice(7);
-            } else if (line.startsWith("data: ")) {
-              dataLine += line.slice(6);
-            }
-        }
-        if (eventType !== "message") continue;
+        if (chunk.event !== "message") continue;
         try {
-            const parsed = JSON.parse(dataLine);
-            const msg = typeof parsed === "string" ? parsed : parsed.message ?? "";
+            const msg = chunk.data.message;
             setOutput((prev) => prev + msg);
         } catch (err) {
             console.error("Failed to parse SSE chunk:", err);
