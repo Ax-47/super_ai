@@ -1,23 +1,24 @@
-import { ChromaClient, Collection, EmbeddingFunction } from "chromadb";
+import { ChromaClient, Collection } from "chromadb";
+import { GoogleGeminiEmbeddingFunction } from "@chroma-core/google-gemini";
 import { inject, injectable } from "tsyringe";
-
 export type Metadata = { [key: string]: string | number | boolean | null };
 @injectable()
 export class VectorDatabaseRepository<T extends Metadata = Metadata> {
   private collections: Map<string, Collection>;
   constructor(
-    @inject(ChromaClient) private readonly client: ChromaClient
+    @inject(ChromaClient) private readonly client: ChromaClient,
+    @inject(GoogleGeminiEmbeddingFunction) private readonly embeddingFunction: GoogleGeminiEmbeddingFunction,
   ) {
     this.collections = new Map();
   }
 
-  public async getCollection(name: string, embeddingFunction?: EmbeddingFunction): Promise<Collection> {
+  public async getCollection(name: string): Promise<Collection> {
     if (this.collections.has(name))
       return this.collections.get(name)!;
 
     const collection = await this.client.getOrCreateCollection({
       name,
-      embeddingFunction,
+      embeddingFunction: this.embeddingFunction,
     });
 
     this.collections.set(name, collection);

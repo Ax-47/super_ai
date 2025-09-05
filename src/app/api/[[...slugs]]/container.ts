@@ -14,29 +14,27 @@ import { CreateQAPairRepository, CreateQAPairRepositoryImpl } from "./repositori
 import { QAPairDatabaseRepository, QAPairDatabaseRepositoryImpl } from "./infrastructures/qa_pair/database";
 import { QAPairVectorDatabaseRepository, QAPairVectorDatabaseRepositoryImpl } from "./infrastructures/qa_pair/vector_database";
 import { ReadQAPairsRepository, ReadQAPairsRepositoryImpl } from "./repositories/qa_pair/read_qa_pairs";
+
+import { GoogleGeminiEmbeddingFunction } from "@chroma-core/google-gemini";
 import { GoogleGenAI } from "@google/genai";
 import { ChatRepository, ChatRepositoryImpl } from "./repositories/chat";
 import { LLMRepository, LLMRepositoryImpl } from "./infrastructures/llm";
-container.register(Client, {
-  useValue: new Client({
-    contactPoints: [process.env.DATABASE_URL!],
-    localDataCenter: "datacenter1",
-    keyspace: process.env.DATABASE_KEYSPACE!
-  })
-});
-
 container.register(ChromaClient, {
   useValue: new ChromaClient(
     {
       ssl: false,
-      host: "localhost",
-      port: 8000,
+      host: process.env.VECTOR_DATABASE_URL,
+      port: Number(process.env.VECTOR_DATABASE_PORT),
       tenant: "default_tenant",
       database: "default_database",
     }
   )
 });
 
+container.register(GoogleGeminiEmbeddingFunction, {
+  useValue:  new GoogleGeminiEmbeddingFunction({ apiKey: process.env.LLMAPIKEY,
+          modelName: "gemini-embedding-001",
+  })});
 container.register(Client, {
   useValue: new Client({
     contactPoints: [process.env.DATABASE_URL!],

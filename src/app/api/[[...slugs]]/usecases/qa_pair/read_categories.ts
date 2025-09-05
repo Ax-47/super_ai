@@ -1,7 +1,7 @@
 import { inject, injectable } from "tsyringe";
 import { Usecase } from "../interface";
 import type { ReadQAPairsRepository } from "../../repositories/qa_pair/read_qa_pairs";
-import { QAPairResponseType } from "../../dtos/qa_pair";
+import { QAPairsResponseType } from "../../dtos/qa_pair";
 interface Input {
   limit: number;
   pagingState?: string;
@@ -9,7 +9,7 @@ interface Input {
 }
 
 interface Output {
-  qa_pairs: QAPairResponseType[];
+  qa_pairs: QAPairsResponseType[];
   nextPagingState?: string;
 }
 

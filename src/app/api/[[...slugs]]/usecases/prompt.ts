@@ -25,7 +25,8 @@ export class ChatUsecase {
       const generatorPrompt = this.chat_repo.buildGeneratorPrompt(prompt, retrievedAnswer.toString());
       for await (const chunk of this.chat_repo.prompt(generatorPrompt))
         yield chunk;
-    } catch {
+    } catch (e) {
+      console.log(e)
       yield "ขออภัย ฉันไม่สามารถหาข้อมูลที่ตรงกับคำถามของคุณได้ในขณะนี้";
       return;
     }

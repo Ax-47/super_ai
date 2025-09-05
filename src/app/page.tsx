@@ -1,6 +1,5 @@
 "use client"
 import { useState } from "react";
-import { api } from "./libs/eden";
 import {
   Box,
   Card,
@@ -21,6 +20,7 @@ import {
   RiAddLine,
   RiMicLine,
 } from "react-icons/ri";
+import { api } from "./libs/eden";
 export default function ChatPage() {
   const [prompt, setPrompt] = useState("");
   const [output, setOutput] = useState("");
@@ -71,14 +71,11 @@ export default function ChatPage() {
         setLoading(false);
         return;
       }
-      for await (const chunk of data) {
-        if (chunk.event !== "message") continue;
-        try {
-            const msg = chunk.data.message;
-            setOutput((prev) => prev + msg);
-        } catch (err) {
-            console.error("Failed to parse SSE chunk:", err);
-        }
+      let res ="";
+      for await (const chunk of data){
+        res += chunk.data.message
+        setOutput(res);
+
       }
     } catch (error) {
       setOutput("❌ Error during fetch");
@@ -121,6 +118,7 @@ export default function ChatPage() {
               </Typography>
             </Box>
 
+            {output === ""&&
             <Box sx={{ textAlign: "left" }}>
               <Typography
                 variant="h6"
@@ -133,6 +131,7 @@ export default function ChatPage() {
                 Category
               </Typography>
             </Box>
+            }
             {output === ""&&
             <Box
               sx={{

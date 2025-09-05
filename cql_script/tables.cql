@@ -1,4 +1,4 @@
-CREATE KEYSPACE SuperAI WITH  replication = {'class':'SimpleStrategy', 'replication_factor':1};
+
 -- immuable table
 CREATE TABLE UserChats (
   user_id uuid,
