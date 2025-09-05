@@ -126,6 +126,7 @@ export class QAPairDatabaseRepositoryImpl implements QAPairDatabaseRepository {
       throw new Error("DatabaseError: Unable to read qa_pairs with paging.");
     }
   }
+
   async read(category_id: string): Promise<Category | null> {
     const query = `
       SELECT category_id, category_name, created_at, updated_at

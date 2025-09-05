@@ -2,6 +2,7 @@ import { inject, injectable } from 'tsyringe';
 import type { LLMRepository } from '../infrastructures/llm';
 import { Metadata } from '../infrastructures/vector_db';
 import type { QAPairVectorDatabaseRepository } from '../infrastructures/qa_pair/vector_database';
+import type { CategoryDatabaseRepository } from '../infrastructures/category/database';
 
 export interface ChatRepository {
   getCategoryListString(): Promise<string>;
@@ -25,14 +26,13 @@ export class ChatRepositoryImpl implements ChatRepository {
     @inject("LLMRepository") private readonly llm_repo: LLMRepository,
     @inject("QAPairVectorDatabaseRepository")
     private readonly vector_database_repo: QAPairVectorDatabaseRepository,
+    @inject("CategoryDatabaseRepository")
+    private readonly database_repo: CategoryDatabaseRepository
   ) { }
 
   async getCategoryListString(): Promise<string> {
-    // mock data ตอนนี้
-    const categories = ["academic_calendar", "admissions", "curriculum_and_tuition_fees"];
-    // TODO: ภายหลังเปลี่ยนเป็น:
-    // const categories = await this.redisClient.get("categories");
-    return categories.map(cat => `- ${cat}`).join("\n");
+    const res = await this.database_repo.readAllPaginated(500);
+    return res.categories.map(({ category_name }) => `- ${category_name}`).join("\n");
   }
   buildClassifierPrompt(userQuestion: string, categoryListStr: string): string {
     return `
